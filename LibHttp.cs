@@ -11,14 +11,11 @@ namespace Lib
     class Http
     {
         private string response = null;
-        public Http(String url, String method = "GET", string header = null)
+        public Http(String url, String method = "GET", string header = null, string post_data = null)
         {
             WebRequest request = WebRequest.Create(url);
             request.Method = method;
             // add header
-            if (method.ToUpper() == "POST") { 
-                // set the content size
-            }
             if (header != null) {
                 string [] h_arr = header.Split('\n');
                 int len = h_arr.Length;
@@ -38,6 +35,23 @@ namespace Lib
                 }
             }
             // end add header
+
+            // request postdata
+            if (post_data != null)
+            {
+                // Convert the data to a byte array
+                byte[] byteArray = Encoding.UTF8.GetBytes(post_data);
+
+                // Set the content length header
+                request.ContentLength = byteArray.Length;
+
+                // Get the request stream and write the data to it
+                using (Stream dataStream = request.GetRequestStream())
+                {
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                }
+            }
+            // request end post data
 
             WebResponse resp = null;
             try
@@ -67,7 +81,7 @@ namespace Lib
     {
         static void Main(string[] args)
         {
-            Http http = new Http("http://localhost:7777/app/web/system", "GET", "Content-Type: application/json\nage: 20");
+            Http http = new Http("http://localhost:9000/info", "POST", "Content-Type: application/json", "hellow world this is sa sample");
             Console.WriteLine("{0}", http.getResponse());
             Console.ReadLine();
         }
