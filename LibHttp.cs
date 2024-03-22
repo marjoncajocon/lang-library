@@ -11,8 +11,21 @@ namespace Lib
     class Http
     {
         private string response = null;
+        private bool isError = false;
+
+        public static string Encode(byte[] str) {
+            return Convert.ToBase64String(str);
+        }
+
+        public static byte [] Decode(String str) {
+            return Convert.FromBase64String(str);
+        }
+
         public Http(String url, String method = "GET", string header = null, string post_data = null)
         {
+
+            WebResponse resp = null;
+
             WebRequest request = WebRequest.Create(url);
             request.Method = method;
             // add header
@@ -36,26 +49,28 @@ namespace Lib
             }
             // end add header
 
-            // request postdata
-            if (post_data != null)
-            {
-                // Convert the data to a byte array
-                byte[] byteArray = Encoding.UTF8.GetBytes(post_data);
-
-                // Set the content length header
-                request.ContentLength = byteArray.Length;
-
-                // Get the request stream and write the data to it
-                using (Stream dataStream = request.GetRequestStream())
-                {
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-                }
-            }
-            // request end post data
-
-            WebResponse resp = null;
+            
             try
             {
+
+                // request postdata
+                if (post_data != null)
+                {
+                    // Convert the data to a byte array
+                    byte[] byteArray = Encoding.UTF8.GetBytes(post_data);
+
+                    // Set the content length header
+                    request.ContentLength = byteArray.Length;
+
+                    // Get the request stream and write the data to it
+                    using (Stream dataStream2 = request.GetRequestStream())
+                    {
+                        dataStream2.Write(byteArray, 0, byteArray.Length);
+                    }
+                }
+                // request end post data
+
+
                 // Get the response
                 resp = request.GetResponse();
                 Stream dataStream = resp.GetResponseStream();
@@ -64,6 +79,7 @@ namespace Lib
             }
             catch (WebException e)
             {
+                this.isError = true;
                 Console.WriteLine("WebException: {0}", e.Message);
             }
             finally {
@@ -75,13 +91,16 @@ namespace Lib
         public string getResponse() {
             return this.response;
         }
+        public bool isConnected() {
+            return this.isError;
+        }
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            Http http = new Http("http://localhost:9000/info", "POST", "Content-Type: application/json", "hellow world this is sa sample");
+            Http http = new Http("http://localhost:9000/info", "POST", "Content-Type: application/json", Http.Encode(Encoding.UTF8.GetBytes("marjon cajocon the greate")));
             Console.WriteLine("{0}", http.getResponse());
             Console.ReadLine();
         }
