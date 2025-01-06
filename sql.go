@@ -14,6 +14,11 @@ type Sql struct {
 	Tx   *sql.Tx
 }
 
+func NewSql(name *string) *Sql {
+	con := Sql{}
+	return con.New(name)
+}
+
 func (con *Sql) New(name *string) *Sql {
 
 	con.Name = "db/general.db" // default
