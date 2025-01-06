@@ -38,10 +38,11 @@ func (con *Sql) New(name *string) *Sql {
 	return con
 }
 
-func (con *Sql) Commit(query string, args ...any) {
+func (con *Sql) Commit(query string, args ...any) error {
 	stmt, err := con.Tx.Prepare(query)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return err
 	}
 	defer stmt.Close()
 
@@ -49,13 +50,16 @@ func (con *Sql) Commit(query string, args ...any) {
 		// If an error occurs, rollback the transaction
 		con.Tx.Rollback()
 		fmt.Println(err)
+		return err
 	}
+	return nil
 }
 
-func (con *Sql) CommitMultiple(query string, args [][]any) {
+func (con *Sql) CommitMultiple(query string, args [][]any) error {
 	stmt, err := con.Tx.Prepare(query)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return err
 	}
 
 	defer stmt.Close() // Ensure the statement is closed after use
@@ -67,9 +71,10 @@ func (con *Sql) CommitMultiple(query string, args [][]any) {
 				fmt.Println("Failed to rollback transaction:", errRollback)
 			}
 			fmt.Println("Error executing statement:", err)
-			return // Early return on error
+			return err // Early return on error
 		}
 	}
+	return nil
 }
 
 func (con *Sql) Get(query string, args ...any) (*sql.Rows, error) {
