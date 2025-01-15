@@ -20,3 +20,35 @@ Sub SendHttpGETRequest()
     ' Clean up
     Set oXMLHTTP = Nothing
 End Sub
+
+Sub SendPostRequestXMLHTTP()
+    Dim http As Object
+    Dim url As String
+    Dim data As String
+    Dim responseText As String
+
+    ' Set the URL and data for the request
+    url = "https://your.api.endpoint/endpoint"
+    data = "param1=value1&param2=value2" ' Data to be sent in POST request
+
+    ' Create the XMLHTTP object
+    Set http = CreateObject("MSXML2.XMLHTTP")
+
+    ' Open the HTTP request
+    http.Open "POST", url, False
+
+    ' Set the required headers
+    http.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
+
+    ' Send the request with data
+    http.send data
+
+    ' Get the response text
+    responseText = http.responseText
+
+    ' Output the response
+    Debug.Print responseText
+    
+    ' Clean up
+    Set http = Nothing
+End Sub
