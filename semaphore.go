@@ -1,7 +1,8 @@
 /// batch processing in go lang
 var files []string // example list file path
 
-sem := make(chan struct{}, 1)
+
+sem := make(chan struct{}, 5) // put the number of batch here,, example 5
 var wg sync.WaitGroup
 for _, file := range files {
 	wg.Add(1)
