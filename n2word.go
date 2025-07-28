@@ -13,7 +13,7 @@ func NewNumber() *Number {
 }
 func (obj *Number) Int2Word(num int) string {
 	// trim character
-	return strings.Trim(strings.ReplaceAll(obj.toWord(num), "  ", " "), ", ")
+	return strings.Trim(strings.Trim(strings.ReplaceAll(obj.toWord(num), "  ", " "), ", "), "-")
 }
 
 func (obj *Number) toWord(num int) string {
@@ -29,7 +29,7 @@ func (obj *Number) toWord(num int) string {
 	} else if num < 20 {
 		ret = unit1[num]
 	} else if num < 100 {
-		ret += unit2[num/10] + " " + unit1[num%10]
+		ret += unit2[num/10] + "-" + unit1[num%10]
 	} else {
 		i := 0
 		unit3_len := len(unit3_val)
@@ -50,5 +50,6 @@ func (obj *Number) toWord(num int) string {
 
 func main() {
 	n := NewNumber()
-	fmt.Println(n.Int2Word(849582))
+	fmt.Println(n.Int2Word(8165432098710))
+	//fmt.Println(n.Int2Word(30))
 }
