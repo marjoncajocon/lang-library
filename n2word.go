@@ -1,6 +1,22 @@
-import "fmt"
+package main
 
-func int2word(num int) string {
+import (
+	"fmt"
+	"strings"
+)
+
+type Number struct {
+}
+
+func NewNumber() *Number {
+	return &Number{}
+}
+func (obj *Number) Int2Word(num int) string {
+	// trim character
+	return strings.Trim(strings.ReplaceAll(obj.toWord(num), "  ", " "), ", ")
+}
+
+func (obj *Number) toWord(num int) string {
 
 	unit1 := [...]string{"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"}
 	unit2 := [...]string{"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"}
@@ -21,7 +37,7 @@ func int2word(num int) string {
 			d := num / unit3_val[i]
 			r := num % unit3_val[i]
 			if d > 0 {
-				ret += int2word(d) + " " + unit3[i] + " " + int2word(r)
+				ret += obj.toWord(d) + " " + unit3[i] + " " + obj.toWord(r)
 				break
 			}
 			i++
@@ -29,8 +45,10 @@ func int2word(num int) string {
 	}
 
 	return ret
+
 }
 
 func main() {
-	fmt.Println(int2word(99999))
+	n := NewNumber()
+	fmt.Println(n.Int2Word(849582))
 }
